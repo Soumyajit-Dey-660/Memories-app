@@ -1,4 +1,4 @@
-# Getting Started with Create React App
+# Memories MERN App
 
 This is a MERN social media app where you can Post your memories with description and pictures and other users can see and like your pictures. Along with it, you can update and delete posts you have created earlier.
 
