@@ -1,26 +1,48 @@
-import { FETCH_ALL, CREATE, UPDATE, DELETE, LIKE } from '../types/posts';
+import { FETCH_ALL, FETCH_BY_SEARCH, START_LOADING, END_LOADING, CREATE, UPDATE, DELETE, LIKE, FETCH_POST } from '../types/posts';
 import * as api from '../../api';
 
-export const getPosts = () => async dispatch => {
+export const getPost = (id) => async dispatch => {
     try {
-        const response = await api.fetchPosts();
+        dispatch({ type: START_LOADING });
+        const { data } = await api.fetchPost(id);
         dispatch({
-            type: FETCH_ALL,
-            payload: response.data.data
+            type: FETCH_POST,
+            payload: data.data
         })
-    } catch(error) {
-        console.log(error.message);
-    }   
-
+        dispatch({ type: END_LOADING });
+    } catch (error) {
+        console.log(error);
+    }
 }
 
-export const createPost = post => async dispatch => {
+export const getPosts = (page) => async dispatch => {
     try {
+        dispatch({ type: START_LOADING });
+        const { data } = await api.fetchPosts(page);
+        dispatch({
+            type: FETCH_ALL,
+            payload: {
+                data: data.data,
+                currentPage: data.currentPage,
+                numOfPages: data.numOfPages
+            }
+        })
+        dispatch({ type: END_LOADING });
+    } catch(error) {
+        console.log(error);
+    }   
+}
+
+export const createPost = (post, history) => async dispatch => {
+    try {
+        dispatch({ type: START_LOADING });
         const response = await api.createPost(post);
+        history.push(`/posts/${response.data.data._id}`)
         dispatch({
             type: CREATE,
             payload: response.data.data
         })
+        dispatch({ type: END_LOADING });
     } catch (error) {
         console.log(error.message)
     }
@@ -59,5 +81,19 @@ export const likePost = id => async dispatch => {
         })
     } catch (error) {
         console.log(error.message);
+    }
+}
+
+export const getPostsBySearch = (searchQuery) => async dispatch => {
+    try {
+        dispatch({ type: START_LOADING });
+        const { data: { data } } = await api.fetchPostsBySearch(searchQuery);
+        dispatch({
+            type: FETCH_BY_SEARCH,
+            payload: data
+        })
+        dispatch({ type: END_LOADING });
+    } catch (error) {
+        console.log(error);
     }
 }

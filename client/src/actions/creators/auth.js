@@ -8,7 +8,7 @@ export const signIn = (formData, history) => async dispatch => {
         dispatch({
             type: AUTH,
             payload: {
-                data: response.data.data,
+                result: response.data.data,
                 token: response.data.token
             }
         })
@@ -24,7 +24,7 @@ export const signUp = (formData, history) => async dispatch => {
         dispatch({
             type: AUTH,
             payload: {
-                data: response.data.data,
+                result: response.data.data,
                 token: response.data.token
             }
         })

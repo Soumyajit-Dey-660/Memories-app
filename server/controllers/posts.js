@@ -1,11 +1,35 @@
 const mongoose = require('mongoose');
 const PostMessage = require('../models/postMessage');
 
-const getPosts = async (req, res) => {
+const getPost = async (req, res) => {
+    const { id } = req.params;
     try {
-        const postMessages = await PostMessage.find();
-        res.status(200).send({error: null, message: 'Success', data: postMessages});
+        const post = await PostMessage.findById(id);
+        res.status(200).send({
+            error: null,
+            message: 'Success',
+            data: post
+        })
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({
+            error: true,
+            message: 'Something went worng',
+        })
+    }
+}
+
+const getPosts = async (req, res) => {
+    const { page } = req.query;
+    try {
+        const LIMIT = 8; // No of posts per page
+        const startIndex = (Number(page) - 1) * LIMIT; // Get the starting index of every page
+        const total = await PostMessage.countDocuments({}); // Get the total number of memories.
+        // It is needed to calculate the number of pages we currently have
+        const posts = await PostMessage.find().sort({ _id: -1 }).limit(LIMIT).skip(startIndex) // Newest to oldest and skip all the memories till startIndex
+        res.status(200).send({error: null, message: 'Success', data: posts, currentPage: Number(page), numberOfPages: Math.ceil(total / LIMIT)});
     } catch(error) {
+        console.log(error);
         res.status(500).send({error: true, message: 'Something went wrong', data: []})
     }
 }
@@ -76,10 +100,32 @@ const likePost = async (req, res) => {
     }
 }
 
+const getPostsBySearch = async (req, res) => {
+    const { searchQuery, tags } = req.query;
+    try {
+        const title = new RegExp(searchQuery, 'i'); // Test, TEST, test -> test
+        // $or -> Either or one of the title, tags.
+        const posts = await PostMessage.find({ $or: [ { title }, { tags: { $in: tags.split(',') } } ] }) 
+        res.status(200).send({
+            error: null,
+            message: 'Posts with similar title or tags',
+            data: posts
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            error: true,
+            message: 'Something went wrong'
+        })
+    }
+}
+
 module.exports = {
+    getPost,
     getPosts,
     createPost,
     updatePost,
     deletePost,
-    likePost
+    likePost,
+    getPostsBySearch
 }
