@@ -7,7 +7,6 @@ import { useSelector } from 'react-redux';
 const Posts = ({ setCurrentId }) => {
     const { posts, isLoading } = useSelector(state => state.posts)
     const classes = useStyles();
-    console.log(posts);
     if (!posts.length && !isLoading) return 'No Posts available';
     return (
         <>

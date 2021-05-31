@@ -4,7 +4,6 @@ const User = require('../models/user');
 
 const signIn = async (req, res) => {
     const { email, password } = req.body;
-    console.log('Req body ', req.body);
     try {
         const existingUser = await User.findOne({ email });
         if (!existingUser) return res.status(404).send({
@@ -32,7 +31,6 @@ const signIn = async (req, res) => {
 
 const signUp = async (req, res) => {
     const { firstName, lastName, email, password, confirmPassword } = req.body;
-    console.log('Req body: ', req.body);
     try {
         const existingUser = await User.findOne({ email });
         if (existingUser) return res.status(400).send({
@@ -45,7 +43,6 @@ const signUp = async (req, res) => {
         })
         const hashedPassword = await bcrypt.hash(password, 12);
         const name = `${firstName} ${lastName}`;
-        console.log('NAME: ', name);
         const result = await User.create({ email, password: hashedPassword, name });
         const token = jwt.sign({ email: result.email, id: result._id }, 'test', { expiresIn: '1h' });
         return res.status(200).send({

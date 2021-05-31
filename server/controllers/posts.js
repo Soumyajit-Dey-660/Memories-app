@@ -64,7 +64,6 @@ const deletePost = async (req, res) => {
             error: null, message: `No Post found with id ${_id}`
         })
         await PostMessage.findByIdAndRemove(_id);
-        console.log("DELETED!!")
         res.status(200).send({
             error: null, message: 'Post deleted successfully'
         })

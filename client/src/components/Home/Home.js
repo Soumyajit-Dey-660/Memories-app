@@ -42,8 +42,6 @@ const Home = () => {
     const searchPost = () => {
         if (search.trim() || tags) {
             // dispatch -> fetch search post
-            const see = tags.join(',')
-            console.log('tags ',see)
             dispatch(getPostsBySearch({ search, tags: tags.join(',') }));
             history.push(`/posts/search?searchQuery=${search || 'none'}&tags=${tags.join(',')}`);
         } else {

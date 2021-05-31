@@ -26,7 +26,6 @@ const Auth = () => {
     })
     const handleSubmit = event => {
         event.preventDefault();
-        console.log('Form Data: ', formData);
         if (isSignedUp) {
             dispatch(signUp(formData, history));
         } else {
@@ -44,7 +43,6 @@ const Auth = () => {
         setShowPassword(false);
     }
     const googleSuccess = async (res) => {
-        console.log('SUCCESSFULLY logged in using your google account');
         const result = res?.profileObj;
         const token = res?.tokenId;
         try {
@@ -62,7 +60,6 @@ const Auth = () => {
     }
     const googleFailure = (error) => {
         console.log(error);
-        console.log("Google Sign in was unsuccessful");
     }
     return (
         <Container component="main" maxWidth="xs">
